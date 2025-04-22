@@ -155,6 +155,8 @@ class plgVmpaymentDuitku extends vmPSPlugin
             $payment_method = "NC";
         else if ($this->_currentMethod->duitkuproduct == "atome")
             $payment_method = "AT";
+        else if ($this->_currentMethod->duitkuproduct == "jeniuspay")
+            $payment_method = "JP";
         else if ($this->_currentMethod->duitkuproduct == "gudangvoucherqris")
             $payment_method = "GQ";
 		
