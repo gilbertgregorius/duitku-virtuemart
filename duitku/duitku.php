@@ -159,6 +159,10 @@ class plgVmpaymentDuitku extends vmPSPlugin
             $payment_method = "JP";
         else if ($this->_currentMethod->duitkuproduct == "gudangvoucherqris")
             $payment_method = "GQ";
+        else if ($this->_currentMethod->duitkuproduct == "vadanamon")
+            $payment_method = "DM";
+        else if ($this->_currentMethod->duitkuproduct == "vasampoerna")
+            $payment_method = "S1";
 		
 		$conversion_rate = floatval($this->_currentMethod->conversion_rate);
 		if(!isset($conversion_rate) OR $conversion_rate='' OR $conversion_rate='1'){
@@ -257,7 +261,7 @@ class plgVmpaymentDuitku extends vmPSPlugin
 		}		    											
 		
 		//might be required if virtual account
-		if ($this->_currentMethod->duitkuproduct == "permata" || $this->_currentMethod->duitkuproduct == "vaatmbersama" || $this->_currentMethod->duitkuproduct == "vabni" || $this->_currentMethod->duitkuproduct == "vamandiri" || $this->_currentMethod->duitkuproduct == "ovo" || $this->_currentMethod->duitkuproduct == "vacimb" || $this->_currentMethod->duitkuproduct == "vamaybank") {			            
+		if ($this->_currentMethod->duitkuproduct == "permata" || $this->_currentMethod->duitkuproduct == "vaatmbersama" || $this->_currentMethod->duitkuproduct == "vabni" || $this->_currentMethod->duitkuproduct == "vamandiri" || $this->_currentMethod->duitkuproduct == "ovo" || $this->_currentMethod->duitkuproduct == "vacimb" || $this->_currentMethod->duitkuproduct == "vamaybank" || $this->_currentMethod->duitkuproduct == "vadanamon" || $this->_currentMethod->duitkuproduct == "vasampoerna") {	
 			$cart->emptyCart();
 			$order_history = array(
 					'customer_notified' => 1, 
