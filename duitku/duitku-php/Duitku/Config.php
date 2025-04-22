@@ -7,8 +7,8 @@ class Duitku_Config {
   public static $isProduction = false;  
   public static $isSanitized = true;
 
-  const SANDBOX_BASE_URL = 'http://182.23.85.10/rbsnewwebapi/';
-  const PRODUCTION_BASE_URL = 'https://api.veritrans.co.id/v2';
+  const SANDBOX_BASE_URL = 'http://sandbox.duitku.com/webapi';
+  const PRODUCTION_BASE_URL = 'https://passport.duitku.com/webapi';
 
   public static function getBaseUrl()
   {

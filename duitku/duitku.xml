@@ -1,13 +1,13 @@
-<?xml version="1.3" encoding="UTF-8" ?>
-<extension version="1.3" type="plugin" group="vmpayment" method="install">
+<?xml version="1.1" encoding="UTF-8" ?>
+<extension version="2.1" type="plugin" group="vmpayment" method="install">
   <name>Duitku</name>
-  <creationDate>Januari 20 2017</creationDate>
+  <creationDate>Mar 17 2020</creationDate>
   <author>Kharisma Catur Mandala</author>
   <authorUrl>https://www.duitku.com</authorUrl>
   <authorEmail>admin@duitku.com</authorEmail>
   <copyright>Copyright (C) 2017 Kharisma Catur Mandala Inc. All rights reserved.</copyright>
   <license>The MIT License (MIT)</license>
-  <version>1.3.0</version>
+  <version>2.1.0</version>
   <description><![CDATA[<a href="https://duitku.com" target="_blank">Duitku</a> Pilihan Payment Gateway Terbaik. ]]></description>
   <files>
     <filename plugin="duitku">duitku.php</filename> 
@@ -34,9 +34,13 @@
 					<option value="vacimb">VMPAYMENT_DUITKU_PRODUCTS_VA_CIMB</option>
 					<option value="vamaybank">VMPAYMENT_DUITKU_PRODUCTS_VA_MAYBANK</option>
 					<option value="varitel">VMPAYMENT_DUITKU_PRODUCTS_VA_RITEL</option>
+					<option value="shopeepay">VMPAYMENT_DUITKU_PRODUCTS_SHOPEEPAY</option>
+					<option value="indodana">VMPAYMENT_DUITKU_PRODUCTS_INDODANA</option>
                 </field>
                 <field name="url_endpoint" type="text" size="50" label="VMPAYMENT_DUITKU_ENDPOINT"
-                       description="VMPAYMENT_DUITKU_ENDPOINT_DESC" default="https://passport.duitku.com/webapi"/>                
+                       description="VMPAYMENT_DUITKU_ENDPOINT_DESC" default="https://passport.duitku.com/webapi"/>
+				<field name="duitku_expired" type="number" size="50" label="VMPAYMENT_DUITKU_EXPIRED"
+                       description="VMPAYMENT_DUITKU_EXPIRED_DESC" default=""/>
 			    <field name="status_success" type="vmorderstate" scope="com_virtuemart" default="C"
                        label="VMPAYMENT_DUITKU_STATUS_SUCCESS" description="VMPAYMENT_DUITKU_STATUS_SUCCESS_DESC"/>
 			    <field name="status_canceled" type="vmorderstate" scope="com_virtuemart" default="X"

@@ -27,6 +27,7 @@ class plgVmpaymentDuitku extends vmPSPlugin
             'merchant_code' => array('', 'char'),
             'secret_key' => array('', 'char'),
             'url_endpoint' => array('', 'char'),
+            'duitku_expired' => array('', 'char'),
             'status_success' => array('', 'char'),          
 			'status_canceled' => array('', 'char'),
 			'payment_logos' => array('', 'char'),
@@ -111,7 +112,8 @@ class plgVmpaymentDuitku extends vmPSPlugin
 		$configs = $this->getPaymentConfigs($order['details']['BT']->virtuemart_paymentmethod_id);		
 		$merchant_code = $configs['merchant_code'];
 		$api_key = $configs['secret_key'];
-		$url_endpoint =stripslashes(trim($configs['url_endpoint']));		
+		$url_endpoint = stripslashes(trim($configs['url_endpoint']));		
+		$duitku_expired = $configs['duitku_expired'] != null ? $configs['duitku_expired'] : 1440;		
 		$success_url = $configs['success_url'];
 		$order_id = $order['details']['BT']->virtuemart_order_id;		
 		$order_number = $order['details']['BT']->order_number;
@@ -143,7 +145,75 @@ class plgVmpaymentDuitku extends vmPSPlugin
 			$payment_method = "VA";
 		else if ($this->_currentMethod->duitkuproduct == "varitel")
 			$payment_method = "FT";
+		else if ($this->_currentMethod->duitkuproduct == "shopeepay")
+			$payment_method = "SP";
+		else if ($this->_currentMethod->duitkuproduct == "indodana")
+			$payment_method = "DN";
 		
+		$conversion_rate = floatval($this->_currentMethod->conversion_rate);
+		if(!isset($conversion_rate) OR $conversion_rate='' OR $conversion_rate='1'){
+			$conversion_rate = 1;
+		}
+		
+		//ItemDetails
+	  	$itemDetailParams = array();
+
+	  	//item details array
+		foreach ($order['items'] as $line_item_wrapper) {
+			$item = array();
+			$line_item_price = $line_item_wrapper->product_final_price;
+			$item['quantity'] = $line_item_wrapper->product_quantity;
+			$item['price'] = ceil($line_item_price * $conversion_rate) * $item['quantity'];
+			$item['name'] = $line_item_wrapper->order_item_name;
+			$itemDetailParams[] = $item;
+		}
+		
+		//shipment tax item details
+		$price_shipment = ceil(($order['details']['BT']->order_shipment + $order['details']['BT']->order_shipment_tax) * $conversion_rate);
+		if ( $price_shipment != 0 ) {
+			$item = array();
+			$item['quantity'] = 1;
+			$item['price'] = $price_shipment;
+			$item['name'] = "Shipment & tax";
+			$itemDetailParams[] = $item;
+		}
+
+		// $gross_amount += $item['price'] * $item['quantity']
+		
+		//discount item details
+		$price_discount = -(ceil($order['details']['BT']->coupon_discount) * $conversion_rate);
+		if ( $price_discount != 0 ) {
+			$item = array();
+			$item['quantity'] = 1;
+			$item['price'] = $price_discount;
+			$item['name'] = "Coupon";
+			$itemDetailParams[] = $item;
+		}
+		
+		//address
+		$address = $order['details']['BT']->address_1;
+		if (isset($order['details']['BT']->address_2) and $order['details']['BT']->address_2) {
+			$address .= $order['details']['BT']->address_2;
+		}
+		
+		$billing_address = array(
+		  'firstName' => $order['details']['BT']->first_name,
+		  'lastName' => $order['details']['BT']->last_name,
+		  'address' => $address,
+		  'city' => $order['details']['BT']->city,
+		  'postalCode' => $order['details']['BT']->zip,
+		  'phone' => $order['details']['BT']->phone_1,
+		  'countryCode' => "ID"
+		);
+		
+		$customerDetails = array(
+			'firstName' => $order['details']['BT']->first_name,
+			'lastName' => $order['details']['BT']->last_name,
+			'email' => $order['details']['BT']->email,
+			'phoneNumber' => $order['details']['BT']->phone_1,
+			'billingAddress' => $billing_address,
+			'shippingAddress' => $billing_address
+		);
 		
 		$params = array(
           'merchantCode' => $merchant_code, // API Key Merchant /
@@ -153,13 +223,19 @@ class plgVmpaymentDuitku extends vmPSPlugin
           'productDetails' => ' Order : #' . $order_number,
           'additionalParam' => '',
           'merchantUserInfo' => $userinfo, // id of the end-user who's making the payment
+          'customerVaName' => $userinfo,
+          'email' => $order['details']['BT']->email,
+          'phoneNumber' => $order['details']['BT']->phone_1,
           'signature' => $signature,          
           'returnUrl' => JURI::root() . 'index.php?option=com_virtuemart&view=vmplg&task=pluginresponsereceived&on=' . $order['details']['BT']->order_number . '&pm=' . $order['details']['BT']->virtuemart_paymentmethod_id . '&Itemid=' . vRequest::getInt('Itemid') . '&lang=' . vRequest::getCmd('lang', ''),
           'callbackUrl' => JURI::root() . 'index.php?option=com_virtuemart&view=vmplg&task=notify&tmpl=component' . '&lang=' . vRequest::getCmd('lang', ''),
+          'expiryPeriod' => $duitku_expired,
+          'customerDetail' => $customerDetails,
+          'itemDetails' => $itemDetailParams
 		);       				
 		
 		try {
-			$redirUrl = Duitku_VtWeb::getRedirectionUrl($url_endpoint, $params);       			
+			$redirUrl = DuitkuCore_Web::getRedirectionUrl($url_endpoint, $params);       			
 		}
 		catch (Exception $e) {			
 			//$data['errors'][] = $e->getMessage();
@@ -546,7 +622,7 @@ class plgVmpaymentDuitku extends vmPSPlugin
 		$this->_currentMethod->payment_currency = $this->getPaymentCurrency($this->_currentMethod,$order['details']['BT']->payment_currency_id);
 				
 	     if ($order) {			 
-			 if ($status == '00' && Duitku_VtWeb::validateTransaction($url_endpoint, $merchant_code, $order_number, $reference, $api_key)) 
+			 if ($status == '00' && DuitkuCore_Web::validateTransaction($url_endpoint, $merchant_code, $order_number, $reference, $api_key)) 
 			 {				 
 				$order_history = array(
 					'customer_notified' => 1, //send notification to user

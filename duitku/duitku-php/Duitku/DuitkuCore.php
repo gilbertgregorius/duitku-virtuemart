@@ -1,13 +1,13 @@
 <?php
 
-class Duitku_VtWeb {
+class DuitkuCore_Web {
 
   public static function getRedirectionUrl($baseUrl, $params)
   {
     //$payloads = array();
     //$payloads = array_replace_recursive($payloads, $params);    
     
-    $result = Duitku_ApiRequestor::post($baseUrl . '/api/merchant/inquiry',$params);
+    $result = Duitku_ApiRequestor::post($baseUrl . '/api/merchant/v2/inquiry',$params);
 
     //var_dump($result);
     //die();

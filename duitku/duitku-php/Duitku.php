@@ -18,4 +18,4 @@ require_once('Duitku/Config.php');
 
 // Plumbing
 require_once('Duitku/ApiRequestor.php');
-require_once('Duitku/VtWeb.php');
+require_once('Duitku/DuitkuCore.php');
