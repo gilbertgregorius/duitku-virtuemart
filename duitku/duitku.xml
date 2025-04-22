@@ -39,6 +39,7 @@
 					<option value="briva">VMPAYMENT_DUITKU_PRODUCTS_BRIVA</option>
 					<option value="bnc">VMPAYMENT_DUITKU_PRODUCTS_BNC</option>
 					<option value="atome">VMPAYMENT_DUITKU_PRODUCTS_ATOME</option>
+					<option value="gudangvoucherqris">VMPAYMENT_DUITKU_PRODUCTS_GUDANG_VOUCHER_QRIS</option>
                 </field>
                 <field name="url_endpoint" type="text" size="50" label="VMPAYMENT_DUITKU_ENDPOINT"
                        description="VMPAYMENT_DUITKU_ENDPOINT_DESC" default="https://passport.duitku.com/webapi"/>
