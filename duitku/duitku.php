@@ -149,6 +149,12 @@ class plgVmpaymentDuitku extends vmPSPlugin
 			$payment_method = "SP";
 		else if ($this->_currentMethod->duitkuproduct == "indodana")
 			$payment_method = "DN";
+        else if ($this->_currentMethod->duitkuproduct == "briva")
+            $payment_method = "BR";
+        else if ($this->_currentMethod->duitkuproduct == "bnc")
+            $payment_method = "NC";
+        else if ($this->_currentMethod->duitkuproduct == "atome")
+            $payment_method = "AT";
 		
 		$conversion_rate = floatval($this->_currentMethod->conversion_rate);
 		if(!isset($conversion_rate) OR $conversion_rate='' OR $conversion_rate='1'){
@@ -235,7 +241,9 @@ class plgVmpaymentDuitku extends vmPSPlugin
 		);       				
 		
 		try {
-			$redirUrl = DuitkuCore_Web::getRedirectionUrl($url_endpoint, $params);       			
+			$redirUrl = DuitkuCore_Web::getRedirectionUrl($url_endpoint, $params);  
+            // var_dump($params);
+            // exit;     			
 		}
 		catch (Exception $e) {			
 			//$data['errors'][] = $e->getMessage();
