@@ -43,6 +43,7 @@
 					<option value="gudangvoucherqris">VMPAYMENT_DUITKU_PRODUCTS_GUDANG_VOUCHER_QRIS</option>
 					<option value="vadanamon">VMPAYMENT_DUITKU_PRODUCTS_VA_DANAMON</option>
 					<option value="vasampoerna">VMPAYMENT_DUITKU_PRODUCTS_VA_SAMPOERNA</option>
+					<option value="vabsi">VMPAYMENT_DUITKU_PRODUCTS_VA_BSI</option>
                 </field>
                 <field name="url_endpoint" type="text" size="50" label="VMPAYMENT_DUITKU_ENDPOINT"
                        description="VMPAYMENT_DUITKU_ENDPOINT_DESC" default="https://passport.duitku.com/webapi"/>
